@@ -55,3 +55,4 @@ for i = 1:ny
     B(i,:) = (u(i,:) - W(i,:).*X(:)' + v(i,:).*C(i,:))/delta(i);
 end
 S = P - gamma .* R;
+end

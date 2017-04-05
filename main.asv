@@ -48,11 +48,11 @@ R=R0; u=u0; v=v0; S=S0; P=P0; B=B0; W=W0; C=C0;
 %% Solver LOOP
 nt=100;
 % Eqn is written as dQ/dt = A1 * dQ/dX + A2 * dQ/dY
-Q = zeros(ny,nx,5); dt=0.01;
+Q = zeros(ny,nx,5);
 Q(:,:,:) = reshape([R u v P S],ny,nx,5);        % Stores the variables
 Q0 = Q;
 xs = xs0;                                       % Stores iterative shock shape
-prim = fgetprimitives(Q);                 % 1-u, 2-v, 3-p, 4-rho
+prim = fgetprimitives(R,u,v,P);                 % 1-u, 2-v, 3-p, 4-rho
 delta = xb-xs;
 A1 = zeros(5); A2 = A1;
 for t=1:nt
@@ -62,11 +62,11 @@ for t=1:nt
     % Predictor Step
     dQdt1 = fgetderiv(dQXp,dQYp,B,delta,C,prim);
     Q2 = Q - dt.*dQdt1;
-    prim2 = fgetprimitives(Q2);
+    prim2 = fgetprim(Q2);
     
     
-    dQ2Xp = (Q2 - circshift(Q2,[0 1 0]))./dX;
-    dQ2Yp = (Q2 - circshift(Q2,[1 0 0]))./dY;
+    dQ2Xp = (circshift(Q2,Q2 - [0 1 0]))./dX;
+    dQ2Yp = (circshift(Q2,Q2 - [1 0 0]))./dY;
     % corrector step
     dQdt2 = fgetderiv(dQ2Xp,dQ2Yp,B,delta,C,prim2);
     
@@ -74,6 +74,7 @@ for t=1:nt
     dQdt = 0.5*(dQdt1+dQdt2);
     
     % Update
-    Q = Q - dt * dQdt;    
+    Q =
+    
     
 end
